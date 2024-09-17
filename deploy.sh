@@ -1,3 +1,3 @@
-pip install -r requirements.txt
+pip install -r dependencies.txt
 
-waitress-serve --host 127.0.0.1 wsgi:app 
+waitress-serve --host 0.0.0.0 wsgi:app
