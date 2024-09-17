@@ -1,9 +1,12 @@
 from flask import Flask, request
-from markupsafe import escape
 import requests
 from datetime import datetime
+from dotenv import load_dotenv
+import os
 
-apiKey = "da09c7a07669433f86613d78bc8721ea"
+load_dotenv()
+
+apiKey = os.getenv("API_KEY")
 
 app = Flask(__name__)
 

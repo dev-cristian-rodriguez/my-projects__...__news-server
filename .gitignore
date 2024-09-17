@@ -1,2 +1,8 @@
 venv
 ./venv
+
+environment
+./environment
+
+virtualenv
+./virtualenv
