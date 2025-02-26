@@ -1,8 +1,10 @@
-from flask import Flask, request
-import requests
-from datetime import datetime
+from flask import Flask 
+# from datetime import datetime
 from dotenv import load_dotenv
+
+import requests
 import os
+
 
 load_dotenv()
 
@@ -10,44 +12,30 @@ apiKey = os.getenv("API_KEY")
 
 app = Flask(__name__)
 
-@app.route("/news/news", methods=['GET'])
+base_url = "https://newsapi.org/v2"
+
+@app.route("/api/v1/news", methods=['GET'])
 def news(): 
-    url = f'https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey={apiKey}'
+    url = f'{base_url}/top-headlines?sources=bbc-news&sortBy=publishedAt&apiKey={apiKey}'
     
     res = requests.get(url=url)
     
     if res.status_code == 200 : 
-        return dict(message="success", data=res.json())
+        return dict(status = res.status_code, data = res.json())
     else : 
-        return dict(message="failed")    
+        return dict(status = res.status_code, message = res.json())    
     
 
 
-@app.route("/news/news_category") 
-def news_by_category() :
-    
-    date_year = 0
-    date_month = 0
-    date_day = datetime.now().day
-        
-    if int(datetime.now().month) == 1 :
-        date_year = int(datetime.now().year - 1)
-        date_month = 12
-    else :
-        date_year = int(datetime.now().year)
-        date_month = int(datetime.now().month - 1)
-        
-    date_api = f"{date_year}-{int(date_month)}-{date_day}"
-    
-    
-    slug = request.args.get('slug')
-    url = f'https://newsapi.org/v2/everything?q=${slug}&language=es&from={date_api}&sortBy=publishedAt&apiKey={apiKey}'
+@app.route("/api/v1/news/<query>", methods=['GET']) 
+def news_query(query) :
+    url = f'{base_url}/everything?q={query}&sortBy=publishedAt&apiKey={apiKey}'
         
     res = requests.get(url=url)
         
-    if res.status_code == 200 and slug :
-        return dict(message="success", data=res.json().get("articles"))
+    if res.status_code == 200 :
+        return dict(status = res.status_code, data = res.json().get("articles"))
         
     else :
-        return dict(message="failed") 
+        return dict(status = res.status_code, message = res.json())    
     
